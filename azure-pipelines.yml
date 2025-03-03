@@ -36,3 +36,11 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
+- task: AzureRmWebAppDeployment@5
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Free Trial(2026d46f-17f7-4d26-97c2-217ab6c32634)'
+    appType: 'webApp'
+    WebAppName: 'Lynkify'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
