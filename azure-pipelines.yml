@@ -6,6 +6,10 @@
 trigger:
 - master
 
+variables:
+  uiSource: 'src'
+  uibuild: '$(uisource)/build'
+
 pool:
   vmImage: ubuntu-latest
 
