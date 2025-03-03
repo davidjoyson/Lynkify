@@ -6,6 +6,10 @@
 trigger:
 - master
 
+variables:
+  uiBuild: 'build'
+  buildConfiguration: 'Release'
+
 pool:
   vmImage: ubuntu-latest
 
@@ -20,8 +24,24 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(uiBuild)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Free Trial(2026d46f-17f7-4d26-97c2-217ab6c32634)'
+    appType: 'webApp'
+    appName: 'Lynkify'
+    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+    deploymentMethod: 'auto'
