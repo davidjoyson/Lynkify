@@ -43,5 +43,5 @@ steps:
     azureSubscription: 'Free Trial(2026d46f-17f7-4d26-97c2-217ab6c32634)'
     appType: 'webApp'
     appName: 'Lynkify'
-    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     deploymentMethod: 'auto'
