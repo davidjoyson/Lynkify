@@ -8,6 +8,7 @@ trigger:
 
 variables:
   uiBuild: 'build'
+  buildConfiguration: 'Release'
 
 pool:
   vmImage: ubuntu-latest
@@ -41,6 +42,6 @@ steps:
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Free Trial(2026d46f-17f7-4d26-97c2-217ab6c32634)'
-    appType: 'webApp'
+    appType: 'webAppLinux'
     WebAppName: 'Lynkify'
     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
