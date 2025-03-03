@@ -44,3 +44,4 @@ steps:
     appType: 'webApp'
     appName: 'Lynkify'
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    deploymentMethod: 'auto'
