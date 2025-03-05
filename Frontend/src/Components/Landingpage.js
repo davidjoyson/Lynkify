@@ -2,9 +2,27 @@ import { useState } from "react";
 import { Home, BarChart, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import LynkifyLogo from "../Images/lynkifyLogo.png";
+import axios from "axios";
 
 export default function LandingPage() {
     const [isSignUp, setIsSignUp] = useState(true);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
+
+    const handleSignIn = async () => {
+        try {
+            const response = await axios.post("http://localhost:5000/signin", { email, password });
+            setMessage(response.data.message);
+            console.log(response);
+            // Redirect to dashboard on successful login
+            if (response.data.success) {
+                window.location.href = "/dashboard";
+            }
+        } catch (error) {
+            setMessage("Invalid credentials. Please try again.");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900 flex flex-col">
@@ -59,11 +77,13 @@ export default function LandingPage() {
                         ) : (
                             <>
                                 <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Sign In</h2>
-                                <input type="email" placeholder="Email" className="w-full p-2 border rounded mb-2" />
-                                <input type="password" placeholder="Password" className="w-full p-2 border rounded mb-4" />
+                                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded mb-2" />
+                                <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded mb-4" />
+                                {/* <button onClick={handleSignIn} className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">Login</button> */}
                                 <Link to="/dashboard">
-                                    <button className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">Login </button>
+                                    <button className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">Login</button>
                                 </Link>
+                                {message && <p className="text-center mt-2 text-red-600">{message}</p>}
                                 <p className="text-center mt-4 text-gray-600 text-sm md:text-base">
                                     Don't have an account? <button onClick={() => setIsSignUp(true)} className="text-blue-600 hover:underline">Sign Up</button>
                                 </p>
