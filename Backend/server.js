@@ -42,6 +42,15 @@ app.post("/signin", async (req, res) => {
     res.status(401).json({ message: "Invalid credentials" });
   }
 });
+app.get("/users", async (req, res) => {
+  const user = await User.find();
+  res.json(user)
+  if (user) {
+    res.json({ message: "Login successful" });
+  } else {
+    res.status(401).json({ message: "Invalid credentials" });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
