@@ -1,13 +1,13 @@
-# Node.js with React
-# Build a Node.js project that uses React.
+# Node.js
+# Build a general Node.js project with npm.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+- Lynkify_v1
 
 variables:
-  uiSource: 'Frontend'
+  uiSource: 'Backend'
   uiBuild: '$(uiSource)/build'
   buildConfiguration: 'Release'
 
@@ -45,6 +45,6 @@ steps:
   inputs:
     azureSubscription: 'Free Trial(2026d46f-17f7-4d26-97c2-217ab6c32634)'
     appType: 'webApp'
-    appName: 'Lynkify'
+    appName: 'LynkifyBackend'
     package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     deploymentMethod: 'auto'
