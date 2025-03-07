@@ -1,9 +1,12 @@
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { useNavigate } from "react-router-dom";
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export default function HomeComponent() {
+    const navigate = useNavigate();
 
     const lineData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -30,7 +33,11 @@ export default function HomeComponent() {
         { business: "Pet Supplies", link: "https://lynkify.com/pet-supplies", reward: "₹500" },
         { business: "Gourmet Foods", link: "https://lynkify.com/gourmet-foods", reward: "₹350" }
     ];
-    
+
+    const handleClick = () => {
+        navigate("/addreferral");
+    };
+
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
@@ -57,7 +64,12 @@ export default function HomeComponent() {
                 </div>
             </div>
             <div className="mt-6">
-                <h2 className="text-lg font-semibold mb-2">Referral Links & Rewards</h2>
+                <div className="flex items-center justify-between p-4 rounded-lg shadow-md w-full">
+                    <h2 className="text-lg font-semibold mb-2">Referral Links & Rewards</h2>
+                    <button onClick={() => handleClick()} className="px-4 py-2 bg-purple-800 text-white rounded-xl hover:bg-purple-400 transition">
+                        New Referral
+                    </button>
+                </div>
                 <table className="w-full text-left border-collapse border border-gray-700 bg-gray-800 bg-opacity-80 text-white">
                     <thead>
                         <tr className="bg-gray-900 bg-opacity-90">
