@@ -1,14 +1,41 @@
 import { useState } from "react";
 import { Home, BarChart, Users } from "lucide-react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from "../Images/lynkifyLogo.png";
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
     const [isSignUp, setIsSignUp] = useState(true);
-    const [email, setEmail] = useState("");
+    const [userName, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = async () => {
+        const loginData = {
+            userName,
+            password,
+        };
+        try {
+            const response = await fetch("http://localhost:5000/signin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(loginData),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                localStorage.setItem("token", result.token);
+                navigate("/dashboard")
+            } else {
+                alert(result.message || "Login failed!");
+            }
+        } catch (error) {
+            console.error("Error during login:", error);
+            alert("An error occurred. Please try again.");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-gray-900 flex flex-col">
@@ -21,7 +48,7 @@ export default function LandingPage() {
             <div className="flex flex-grow flex-col md:flex-row">
                 {/* Left Section */}
                 <div className="md:w-2/3 flex flex-col justify-center items-center p-6 md:p-10">
-                    <motion.h1 
+                    <motion.h1
                         className="text-3xl md:text-4xl font-bold text-center text-white"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -33,7 +60,7 @@ export default function LandingPage() {
                         Unlock growth with referrals and smart marketing solutions.
                     </p>
                     <section className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 p-6 md:p-8">
-                        <motion.div 
+                        <motion.div
                             className="bg-white shadow-md p-4 md:p-6 rounded-lg text-center"
                             whileHover={{ scale: 1.05 }}
                         >
@@ -41,7 +68,7 @@ export default function LandingPage() {
                             <h3 className="text-lg md:text-xl font-bold mt-3">Boost Sales</h3>
                             <p className="text-gray-600 text-sm md:text-base">Increase your revenue through seamless referrals.</p>
                         </motion.div>
-                        <motion.div 
+                        <motion.div
                             className="bg-white shadow-md p-4 md:p-6 rounded-lg text-center"
                             whileHover={{ scale: 1.05 }}
                         >
@@ -49,7 +76,7 @@ export default function LandingPage() {
                             <h3 className="text-lg md:text-xl font-bold mt-3">Expand Network</h3>
                             <p className="text-gray-600 text-sm md:text-base">Connect with top marketers and affiliates.</p>
                         </motion.div>
-                        <motion.div 
+                        <motion.div
                             className="bg-white shadow-md p-4 md:p-6 rounded-lg text-center"
                             whileHover={{ scale: 1.05 }}
                         >
@@ -77,11 +104,9 @@ export default function LandingPage() {
                         ) : (
                             <>
                                 <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Sign In</h2>
-                                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded mb-2" />
+                                <input type="email" placeholder="Email" value={userName} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded mb-2" />
                                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded mb-4" />
-                                <Link to="/dashboard">
-                                    <button className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">Login</button>
-                                </Link>
+                                <button onClick={() => handleSubmit()} className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">Login</button>
                                 {message && <p className="text-center mt-2 text-red-600">{message}</p>}
                                 <p className="text-center mt-4 text-gray-600 text-sm md:text-base">
                                     Don't have an account? <button onClick={() => setIsSignUp(true)} className="text-blue-600 hover:underline">Sign Up</button>
