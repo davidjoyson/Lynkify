@@ -7,7 +7,8 @@ import { ApiUrl } from "../Urls";
 
 export default function LandingPage() {
     const [isSignUp, setIsSignUp] = useState(true);
-    const [userName, setEmail] = useState("");
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
@@ -31,6 +32,35 @@ export default function LandingPage() {
                 navigate("/dashboard")
             } else {
                 alert(result.message || "Login failed!");
+            }
+        } catch (error) {
+            console.error("Error during login:", error);
+            alert("An error occurred. Please try again.");
+        }
+    };
+
+    const handleSubmitSignup = async () => {
+        const loginData = {
+            "userName": userName,
+            "email": email,
+            "password": password
+        };
+        try {
+            const response = await fetch(`${ApiUrl}/signup`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(loginData),
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message || "Signup Successful");
+                setUserName("");
+                setEmail("");
+                setPassword("");
+            } else {
+                alert(result.message || "Signup failed!");
             }
         } catch (error) {
             console.error("Error during login:", error);
@@ -94,10 +124,10 @@ export default function LandingPage() {
                         {isSignUp ? (
                             <>
                                 <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Sign Up</h2>
-                                <input type="text" placeholder="Full Name" className="w-full p-2 border rounded mb-2" />
-                                <input type="email" placeholder="Email" className="w-full p-2 border rounded mb-2" />
-                                <input type="password" placeholder="Password" className="w-full p-2 border rounded mb-4" />
-                                <button className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Sign Up</button>
+                                <input type="text" placeholder="Full Name" value={userName} onChange={(e) => setUserName(e.target.value)} className="w-full p-2 border rounded mb-2" />
+                                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded mb-2" />
+                                <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded mb-4" />
+                                <button onClick={() => handleSubmitSignup()} className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Sign Up</button>
                                 <p className="text-center mt-4 text-gray-600 text-sm md:text-base">
                                     Already have an account? <button onClick={() => setIsSignUp(false)} className="text-blue-600 hover:underline">Sign In</button>
                                 </p>
@@ -105,7 +135,7 @@ export default function LandingPage() {
                         ) : (
                             <>
                                 <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Sign In</h2>
-                                <input type="email" placeholder="Email" value={userName} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded mb-2" />
+                                <input type="email" placeholder="Email" value={userName} onChange={(e) => setUserName(e.target.value)} className="w-full p-2 border rounded mb-2" />
                                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded mb-4" />
                                 <button onClick={() => handleSubmit()} className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">Login</button>
                                 {message && <p className="text-center mt-2 text-red-600">{message}</p>}
