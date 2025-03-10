@@ -3,6 +3,7 @@ import { Home, BarChart, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import logo from "../Images/lynkifyLogo.png";
 import { useNavigate } from "react-router-dom";
+import { ApiUrl } from "../Urls";
 
 export default function LandingPage() {
     const [isSignUp, setIsSignUp] = useState(true);
@@ -17,7 +18,7 @@ export default function LandingPage() {
             password,
         };
         try {
-            const response = await fetch("http://localhost:5000/signin", {
+            const response = await fetch(`${ApiUrl}/signin`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
