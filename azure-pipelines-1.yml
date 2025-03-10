@@ -21,31 +21,28 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    pushd $(uiSource)
     npm install
-    npm run build
-  displayName: 'npm install and build'
+    popd
+  displayName: 'npm install'
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(uiBuild)'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/nodeapp.zip'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-  
-- task: AzureRmWebAppDeployment@5
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+
+- task: AzureWebApp@1
   inputs:
-    ConnectionType: 'AzureRM'
     azureSubscription: 'Free Trial(2026d46f-17f7-4d26-97c2-217ab6c32634)'
-    appType: 'webAppLinux'
-    WebAppName: 'LynkifyBackend'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-    RuntimeStack: 'NODE:20-lts'
-    StartupCommand: 'node server,js'
-    DeploymentTypeLinux: 'oneDeploy'
+    appType: 'webApp'
+    appName: 'LynkifyBackend'
+    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+    deploymentMethod: 'auto'
