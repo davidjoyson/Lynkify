@@ -29,6 +29,7 @@ export default function LandingPage() {
             const result = await response.json();
             if (response.ok) {
                 localStorage.setItem("token", result.token);
+                localStorage.setItem("userRole", "admin");
                 navigate("/dashboard")
             } else {
                 alert(result.message || "Login failed!");
@@ -43,7 +44,8 @@ export default function LandingPage() {
         const loginData = {
             "userName": userName,
             "email": email,
-            "password": password
+            "password": password,
+            "role": "seller"
         };
         try {
             const response = await fetch(`${ApiUrl}/signup`, {
