@@ -1,1 +1,1 @@
-export const ApiUrl = "https://lynkifybackend-fkezdyfxd6eshufz.westcentralus-01.azurewebsites.net"
+export const ApiUrl = "https://lynkifybackend-fkezdyfxd6eshufz.westcentralus-01.azurewebsites.net/api"

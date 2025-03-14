@@ -15,11 +15,11 @@ export default function LandingPage() {
 
     const handleSubmit = async () => {
         const loginData = {
-            userName,
+            email,
             password,
         };
         try {
-            const response = await fetch(`${ApiUrl}/signin`, {
+            const response = await fetch(`${ApiUrl}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -43,13 +43,13 @@ export default function LandingPage() {
     const handleSubmitSignup = async () => {
         setMessage("");
         const loginData = {
-            "userName": userName,
+            "name": userName,
             "email": email,
             "password": password,
             "role": "seller"
         };
         try {
-            const response = await fetch(`${ApiUrl}/signup`, {
+            const response = await fetch(`${ApiUrl}/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -138,7 +138,7 @@ export default function LandingPage() {
                         ) : (
                             <>
                                 <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Sign In</h2>
-                                <input type="email" placeholder="Email" value={userName} onChange={(e) => setUserName(e.target.value)} className="w-full p-2 border rounded mb-2" />
+                                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded mb-2" />
                                 <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded mb-4" />
                                 <button onClick={() => handleSubmit()} className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">Login</button>
                                 {message && <p className="text-center mt-2 text-red-600">{message}</p>}
