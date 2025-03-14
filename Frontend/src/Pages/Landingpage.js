@@ -29,7 +29,7 @@ export default function LandingPage() {
             const result = await response.json();
             if (response.ok) {
                 localStorage.setItem("token", result.token);
-                localStorage.setItem("userRole", "admin");
+                localStorage.setItem("userRole", result?.user?.role);
                 navigate("/dashboard")
             } else {
                 alert(result.message || "Login failed!");
