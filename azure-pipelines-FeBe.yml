@@ -1,0 +1,126 @@
+trigger:
+- master
+
+variables:
+  # Frontend variables
+  uiSource: 'Frontend'
+  uiBuild: '$(uiSource)/build'
+  
+  # Backend variables
+  backendSource: 'Backend'
+  
+  # Azure Resource Manager connection
+  azureSubscription: '20ad6fe0-2d24-44d1-aa20-072fcd2fd2c8'
+  
+  # Web app names
+  frontendAppName: 'Lynkify'
+  backendAppName: 'LynkifyBackend'
+  
+  # Environment names
+  frontendEnv: 'LynkifyFrontend'
+  backendEnv: 'LynkifyBackend'
+  
+  # Agent VM image
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+  - job: BuildFrontend
+    displayName: 'Build Frontend'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
+    
+    - script: |
+        pushd $(uiSource)
+        npm install
+        npm run build
+        popd
+      displayName: 'Install dependencies and build frontend'
+    
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(uiBuild)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/frontend.zip'
+        replaceExistingArchive: true
+    
+    - publish: '$(Build.ArtifactStagingDirectory)/frontend.zip'
+      artifact: 'frontend-drop'
+
+  - job: BuildBackend
+    displayName: 'Build Backend'
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
+    
+    - script: |
+        pushd $(backendSource)
+        npm install
+        popd
+      displayName: 'Install dependencies'
+    
+    - task: ArchiveFiles@2
+      displayName: 'Archive Backend Files'
+      inputs:
+        rootFolderOrFile: '$(backendSource)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/backend.zip'
+        replaceExistingArchive: true
+    
+    - publish: '$(Build.ArtifactStagingDirectory)/backend.zip'
+      artifact: 'backend-drop'
+
+- stage: Deploy
+  displayName: 'Deploy Stage'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeployFrontend
+    displayName: 'Deploy Frontend'
+    environment: $(frontendEnv)
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Frontend to Azure'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appType: 'webApp'
+              appName: $(frontendAppName)
+              package: '$(Pipeline.Workspace)/frontend-drop/frontend.zip'
+              deploymentMethod: 'auto'
+
+  - deployment: DeployBackend
+    displayName: 'Deploy Backend'
+    environment: $(backendEnv)
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Backend to Azure'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appType: 'webAppLinux'
+              appName: $(backendAppName)
+              runtimeStack: 'NODE|20LTS'
+              package: '$(Pipeline.Workspace)/backend-drop/backend.zip'
+              startUpCommand: 'npm run start'
