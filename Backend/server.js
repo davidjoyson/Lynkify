@@ -19,6 +19,8 @@ mongoose.connect(process.env.MONGO_URI, {
 const UserSchema = new mongoose.Schema({
   userName: String,
   password: String,
+  role: String,
+  email: String
 });
 const User = mongoose.model("users", UserSchema);
 
