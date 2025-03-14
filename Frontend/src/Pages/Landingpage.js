@@ -41,6 +41,7 @@ export default function LandingPage() {
     };
 
     const handleSubmitSignup = async () => {
+        setMessage("");
         const loginData = {
             "userName": userName,
             "email": email,
